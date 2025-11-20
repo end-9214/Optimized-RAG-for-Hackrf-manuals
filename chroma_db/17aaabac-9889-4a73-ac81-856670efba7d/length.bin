@@ -1,0 +1,7 @@
+-DTHREADS_PTHREADS_WIN32_LIBRARY=c:\pthreads-w32-2-9-1-release\Pre-built.2\lib\x64\
+˓→pthreadVC2.lib \
+-DFFTW_INCLUDES=C:\fftw-3.3.5-dll64 \
+-DFFTW_LIBRARIES=C:\fftw-3.3.5-dll64\libfftw3f-3.lib
+CMake will produce a solution file namedHackRF.sln and a series of project files which can be built with msbuild
+as follows:c:\hackrf\host\build> msbuild HackRF.sln
+22.2. Installing From Source 65rtructi
