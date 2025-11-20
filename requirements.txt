@@ -6,3 +6,4 @@ langchain-classic
 langchain-chroma
 sentence-transformers
 pypdf
+black
