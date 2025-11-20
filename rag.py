@@ -70,9 +70,17 @@ def get_retriever(vector_store, k=3):
 
 
 def get_conversational_rag(retriever):
+    contextualize_q_system_prompt = """
+    Given a chat history and the latest user question
+    which might reference context in the chat history,
+    formulate a standalone question which can be understood
+    without the chat history. Do NOT answer the question,
+    just reformulate it if needed and otherwise return it as is.
+    """
+
     contextualize_prompt = ChatPromptTemplate.from_messages(
         [
-            ("system", "Rewrite the user's question to be standalone. Do NOT answer."),
+            ("system", contextualize_q_system_prompt),
             MessagesPlaceholder("chat_history"),
             ("human", "{input}"),
         ]
@@ -84,9 +92,9 @@ def get_conversational_rag(retriever):
 
     qa_prompt = ChatPromptTemplate.from_messages(
         [
-            ("system", "Use ONLY the following context to answer:"),
+            ("system", "You are a helpful AI assistant. Use the following context to answer the user's question."),
             ("system", "Context: {context}"),
-            MessagesPlaceholder("chat_history"),
+            MessagesPlaceholder(variable_name="chat_history"),
             ("human", "{input}"),
         ]
     )

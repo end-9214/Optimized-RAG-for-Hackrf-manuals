@@ -7,3 +7,7 @@ langchain-chroma
 sentence-transformers
 pypdf
 black
+sqlalchemy
+fastapi
+uvicorn
+requests
