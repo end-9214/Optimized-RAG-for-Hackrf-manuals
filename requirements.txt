@@ -11,3 +11,17 @@ sqlalchemy
 fastapi
 uvicorn
 requests
+livekit
+livekit-agents
+livekit-plugins-groq
+livekit-plugins-elevenlabs
+livekit-plugins-silero
+livekit-plugins-deepgram
+livekit-plugins-cartesia
+livekit-plugins-noise-cancellation
+livekit-plugins-turn-detector
+python-dotenv
+fastapi
+livekit-agents[deepgram]
+livekit-agents[cartesia]
+livekit-agents[google]
