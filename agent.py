@@ -25,6 +25,12 @@ from rag import (
 load_dotenv()
 
 
+def running_rag_query(query: str, rag_chain, rag_history_ref):
+    result = rag_chat(rag_chain, query, rag_history_ref[0])
+    rag_history_ref[0] = result["chat_history"]
+    return result["answer"]
+
+
 async def entrypoint(ctx: JobContext):
     await ctx.connect(auto_subscribe=AutoSubscribe.AUDIO_ONLY)
 
@@ -33,33 +39,20 @@ async def entrypoint(ctx: JobContext):
     rag_chain = get_conversational_rag(retriever)
 
     rag_history: List = []
+    rag_history_ref = [rag_history]
 
     @llm.function_tool
     async def rag_query(
-        query: Annotated[
-            str,
-            (
-                "A clear, fully-formed question that should be answered using the "
-                "uploaded documents (PDF/DOCX). Extract this from the user's message."
-            ),
-        ]
+        query: Annotated[str, "A clear question to answer using the uploaded documents."]
     ) -> str:
-        """
-        Use this tool when you need to answer questions based on the user's
-        private documents (PDF/DOCX) indexed in the RAG system.
-        Always call this tool for factual / knowledge-type questions
-        about that custom content instead of guessing.
-        """
-        nonlocal rag_history
-
         loop = asyncio.get_running_loop()
-        result = await loop.run_in_executor(
+        answer = await loop.run_in_executor(
             None,
-            lambda: rag_chat(rag_chain, query, rag_history),
+            running_rag_query,
+            query,
+            rag_chain,
+            rag_history_ref
         )
-
-        rag_history = result["chat_history"]
-        answer = result["answer"]
         return answer
 
     agent = Agent(
@@ -67,10 +60,7 @@ async def entrypoint(ctx: JobContext):
             "You are a helpful voice assistant that can talk naturally with the user. "
             "You have access to a knowledge base built from the user's PDF/DOCX documents. "
             "Whenever the user asks a question that might be answered by those documents, "
-            "you MUST call the 'rag_query' tool with a clean version of the question, "
-            "then use the tool's result to form your final answer. "
-            "If the question is clearly outside the scope of the documents, answer normally. "
-            "Keep your responses clear, concise, and voice-friendly."
+            "you must call the 'rag_query' tool."
         ),
         vad=silero.VAD.load(),
         stt=deepgram.STT(),
