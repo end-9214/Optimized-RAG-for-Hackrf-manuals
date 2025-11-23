@@ -36,6 +36,17 @@ python -c "from rag import create_vector_store; create_vector_store('./documents
 
 ````bash
 uvicorn main:app --reload
+
 ````
+
+
+## Conversational Voice Agent + RAG
+>> I have created a working example of a Livekit + RAG
+
+```bash
+python agent.py dev
+```
+
+* Now go to Livekit Playground to test it out.
 
 Open http://localhost:8000/docs for interactive OpenAPI docs.

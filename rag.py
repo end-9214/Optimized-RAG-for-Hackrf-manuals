@@ -92,7 +92,10 @@ def get_conversational_rag(retriever):
 
     qa_prompt = ChatPromptTemplate.from_messages(
         [
-            ("system", "You are a helpful AI assistant. Use the following context to answer the user's question."),
+            ("system", "You are a helpful AI assistant. Use the following context to answer the user's question."
+             "Keep your answer very concise. "
+             "Limit the response to **3-4 sentences OR under 120 words**. "
+             "Do NOT add unnecessary details or long explanations."),
             ("system", "Context: {context}"),
             MessagesPlaceholder(variable_name="chat_history"),
             ("human", "{input}"),
